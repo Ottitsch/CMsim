@@ -1,6 +1,6 @@
-exam questions:
+# ai slop to learn simulation of condensed matter
 
-2024WS Simulation of condensed matter
+## exam questions:
 
 Chapter 1:
 
@@ -97,19 +97,6 @@ Chapter 8:
 \- 29. How are translational and rotational invariance included in ML potentials?
 
 \- 30. How is permutational invariance included in ML potentials?
-
------
-
-PROMPT:  
-your task is the following:  
-create 1 lecture blog for each slide in slides.pdf
-make sure the lecture blog focusses on answering the exam question of the chapter
-check 4\_profiling\_tools.md as an example
-
------
-make sure the exam questions of the relative chapter is also explicitly stated in the blogs
-
-
 
 
 
