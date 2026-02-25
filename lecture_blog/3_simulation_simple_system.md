@@ -40,7 +40,11 @@ The solution is equilibration: run the simulation for some time before starting 
 
 ## Reproducibility
 
-MD is deterministic given the initial conditions. To reproduce a simulation, you need: the initial positions and velocities, the force field parameters, the integration algorithm and time step, and the random number seed if stochastic elements are involved. Sharing these is essential for reproducibility.
+We can never re-create the exact same trajectory. MD is extremely sensitive to initial conditions, rounding, and the exact sequence of machine instructions — any tiny difference leads to a completely different trajectory.
+
+This is irrelevant: no meaningful physical quantity depends on a single trajectory realization. Observables are averages over many time steps, and these averages are reproducible even though individual trajectories are not.
+
+This extreme sensitivity is the microscopic basis for molecular chaos, which plays an important role in statistical mechanics. Although the equations of motion are time-reversible in principle, this time-reversibility is unobservable in practice.
 
 ## Static properties from an MD trajectory
 
