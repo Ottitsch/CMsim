@@ -17,7 +17,7 @@ MD trajectories are built step by step:
 3. Combine acceleration, positions, and velocities at time t to get positions and velocities at t + Δt
 4. Repeat
 
-All integration methods are based on Taylor expansions. If we know position, velocity, acceleration, jerk, and higher derivatives at time t, we can approximate the state at t + Δt:
+All integration methods are based on Taylor expansions. If we know position, velocity, acceleration, and higher derivatives at time t, we can approximate the state at t + Δt:
 
 ```
 r(t + Δt) = r(t) + Δt·v(t) + ½Δt²·a(t) + ⅙Δt³·j(t) + ...
@@ -37,42 +37,34 @@ v(t + Δt) = v(t) + Δt·a(t)
 ```
 
 **Pros:**
-- Simple to implement and understand
+- Simple to implement
 
 **Cons:**
 - Not time-reversible: running the simulation backwards does not recover the original trajectory
-- Not very accurate: energy drifts systematically over time because the truncation error accumulates in one direction
-- Not symplectic: does not preserve the geometric structure of phase space
+- Not very accurate: energy drifts systematically over time
 
 For production MD, Euler is not used.
 
-## The Velocity-Verlet algorithm
+## The Verlet algorithm
 
-Velocity-Verlet is the standard algorithm in modern MD codes. It updates positions and velocities in a symmetric way:
+By adding the Taylor expansion forward and backward in time and cancelling the odd terms, the velocity drops out entirely:
 
 ```
-Velocity-Verlet algorithm:
-r(t + Δt) = r(t) + Δt·v(t) + ½Δt²·a(t)
-a(t + Δt) = f(r(t + Δt)) / m        ← recompute forces at new positions
-v(t + Δt) = v(t) + ½Δt·[a(t) + a(t + Δt)]
+Verlet algorithm:
+r(t + Δt) = 2r(t) - r(t - Δt) + Δt²·a(t)
 ```
 
 **Pros:**
-- Time-reversible: running the simulation backwards recovers the original trajectory
-- Symplectic: conserves a modified energy, so total energy fluctuates around a constant but does not drift
-- Good energy conservation even for moderately large time steps
-- Only one force evaluation per step (same computational cost as Euler)
-- Positions and velocities are available at the same time step, making energy computation straightforward
+- Straightforward implementation
 
 **Cons:**
-- Slightly more complex to implement than Euler or Leapfrog
-- Requires storing both the old and new accelerations simultaneously during the velocity update
-
-The symplectic property is the key reason Velocity-Verlet is preferred. A symplectic integrator preserves the geometric structure of phase space and keeps long simulations stable.
+- Numerical precision: adding the small correction term Δt²·a(t) to the difference of two large terms 2r(t) - r(t - Δt) causes loss of numerical precision
+- No explicit velocity term (velocities must be recovered separately, e.g. v(t) ≈ [r(t+Δt) - r(t-Δt)] / 2Δt)
+- Not self-starting: requires r(t - Δt) at the start, which is not directly available
 
 ## The Leapfrog algorithm
 
-Leapfrog is mathematically equivalent to Velocity-Verlet but stores velocities at half-integer time steps:
+Leapfrog avoids the precision problem by explicitly tracking velocities at half-integer time steps, so positions and velocities "leapfrog" over each other:
 
 ```
 Leapfrog algorithm:
@@ -81,58 +73,80 @@ r(t + Δt)  = r(t) + Δt·v(t + ½Δt)
 ```
 
 **Pros:**
-- Time-reversible and symplectic: same accuracy and stability as Velocity-Verlet
-- Slightly simpler to implement than Velocity-Verlet
-- Memory efficient: only one set of velocities needs to be stored at a time
+- Explicitly includes velocity term
+- No calculation of difference of large numbers (avoids the Verlet precision problem)
+- Exactly time-reversible
+- Preserves energy well
+- Straightforward implementation
 
 **Cons:**
-- Positions and velocities are offset by half a time step and are never known at the same instant
-- Computing instantaneous kinetic energy requires averaging v(t - ½Δt) and v(t + ½Δt), adding a small complication
-- Less intuitive conceptually than Velocity-Verlet
+- Positions and velocities are not synchronized: they are evaluated at different times, so kinetic and potential energy cannot be computed at the same instant
+- Not self-starting: requires v(t - ½Δt) at the start, which must be estimated
 
-In practice, Leapfrog and Velocity-Verlet produce identical trajectories. Most MD codes use one or the other based on convention.
+## The Velocity-Verlet algorithm
 
-## Comparison: Euler vs Velocity-Verlet vs Leapfrog
+Velocity-Verlet reformulates the integration so that positions and velocities are synchronized at every step:
 
-| Algorithm       | Time-reversible | Energy conserving | Cost |
-|-----------------|-----------------|-------------------|------|
-| Euler           | No              | No (drifts)       | Low  |
-| Velocity-Verlet | Yes             | Yes (symplectic)  | Low  |
-| Leapfrog        | Yes             | Yes (symplectic)  | Low  |
+```
+Velocity-Verlet algorithm:
+r(t + Δt) = r(t) + Δt·v(t) + ½Δt²·a(t)
+a(t + Δt) = f(r(t + Δt)) / m        ← recompute forces at new positions
+v(t + Δt) = v(t) + ½Δt·[a(t) + a(t + Δt)]
+```
 
-All three have the same computational cost per step. The difference is entirely in accuracy and stability, not speed.
+In practice this is a three-stage procedure: compute new positions, recompute forces, then compute new velocities.
+
+**Pros:**
+- Synchronized positions and velocities: total energy can be computed at every step
+- Self-starting: only requires r(t) and v(t) at the start
+- Explicitly includes velocity term
+- No calculation of difference of large numbers
+- Straightforward implementation
+
+**Cons:**
+- Requires a bit more memory than Verlet or Leapfrog (must store both a(t) and a(t+Δt) simultaneously during the velocity update)
+
+## Comparison
+
+| Algorithm       | Time-reversible | Preserves energy | Synchronized r and v | Self-starting |
+|-----------------|-----------------|------------------|----------------------|---------------|
+| Euler           | No              | No (drifts)      | Yes                  | Yes           |
+| Verlet          | Yes             | Yes              | No (no v term)       | No            |
+| Leapfrog        | Yes             | Yes              | No                   | No            |
+| Velocity-Verlet | Yes             | Yes              | Yes                  | Yes           |
+
+Leapfrog and Velocity-Verlet are the standard choices. The lecture highlights both as suitable integrators.
 
 ## Periodic boundary conditions
 
-A simulation box of 1000 atoms has a radius of roughly 3-4 nm. That is almost entirely surface. Real materials are bulk, so surface effects would completely dominate the simulation and give wrong results.
+To simulate bulk material, the simulation box is replicated infinitely in all directions. Each atom interacts with atoms in its own box and with image atoms in neighboring replicas. There is no surface: an atom that leaves through one face immediately re-enters through the opposite face.
 
-Periodic boundary conditions (PBC) solve this by replicating the simulation box infinitely in all directions. Each atom interacts with atoms in its own box and with image atoms in neighboring replicas. Effectively, there is no surface: an atom that leaves through one face immediately re-enters through the opposite face.
-
-In practice, PBC uses the minimum image convention: for each pair of atoms, we use the shortest possible distance between them, considering all periodic images. For a box of length L, this means distances are folded into the range [-L/2, L/2].
+In practice, PBC uses the minimum image convention: for each pair of atoms, we use the shortest possible distance, folding coordinates into the range [-L/2, L/2]:
 
 ```
-Minimum image:
-if |Δx| > L/2: Δx = Δx - sign(Δx) * L
+Coordinates: if r_ix >= L/2, replace by r_ix - L
+             if r_ix <= -L/2, replace by r_ix + L
+Interactions: same rule applied to r_ijx
 ```
+
+**Important limitation:** PBC limits the interaction range to L/2. Long-range interactions (e.g. Coulomb) need special treatment and cannot simply use the cutoff approach.
 
 Advantages of PBC:
 - Eliminates surface artifacts
 - Enables simulation of bulk properties with a small number of atoms
-- Required for computing properties like diffusion or viscosity that require translation invariance
 
 Disadvantages:
 - Artificial periodicity: if the box is too small, an atom interacts with its own image
 - The box size must be larger than twice the interaction cutoff
-- Periodic systems cannot model truly isolated molecules or interfaces without care
+- Long-range interactions require special methods (e.g. Ewald summation)
 
 ## Key answers
 
 **Q4. Name two numerical integration algorithms and their advantages/disadvantages.**
 
-Euler: simple to implement, but not time-reversible and energy drifts. Not used in practice.<br>
-Velocity-Verlet: time-reversible, symplectic (energy stable), same computational cost as Euler. The standard choice.<br>
-Leapfrog: equivalent to Velocity-Verlet in accuracy and stability, but positions and velocities are offset by half a time step, making instantaneous energy evaluation slightly more involved.
+Leapfrog: explicitly includes velocity term, no subtraction of large numbers, exactly time-reversible, preserves energy well, straightforward implementation. Drawback: positions and velocities are not synchronized (kinetic and potential energy cannot be computed at the same time), and it is not self-starting.<br>
+Velocity-Verlet: synchronized positions and velocities (total energy checkable at every step), self-starting, explicitly includes velocity term, straightforward implementation. Drawback: requires slightly more memory than Verlet or Leapfrog.
 
 **Q5. What are periodic boundary conditions and why are they used in MD quite often?**
 
-The simulation box is replicated infinitely in all directions so there is no surface. Atoms leaving one face re-enter from the opposite face. Used because a realistically-sized box would be almost entirely surface, making bulk properties impossible to measure.
+The simulation box is replicated infinitely in all directions so there is no surface. Atoms leaving one face re-enter from the opposite face. Used because a realistically-sized box would be almost entirely surface, making bulk properties impossible to measure. Important caveat: PBC limits the interaction range to L/2, so long-range interactions need special treatment.

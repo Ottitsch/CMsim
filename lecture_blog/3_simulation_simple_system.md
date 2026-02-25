@@ -16,7 +16,7 @@ For N atoms, each atom interacts with every other atom. That is N(N-1)/2 pairs, 
 
 Two standard techniques reduce this cost:
 
-**Cell subdivision** divides the simulation box into a grid of cells, each with edge length slightly larger than the interaction cutoff r_c. For each atom, you only need to check atoms in the same cell and the 26 neighboring cells. Since the number of atoms per cell is roughly constant regardless of N, the total cost drops to O(N).
+**Cell subdivision** divides the simulation box into a grid of cells, each with edge length slightly larger than the interaction cutoff r_c. For each atom, you only need to check atoms across 14 cells (the cell itself and 13 neighbors). Due to Newton's third law symmetry (f_ij = -f_ji), you only need to consider half the neighboring cells rather than all 26, halving the work. Since the number of atoms per cell is roughly constant regardless of N, the total cost drops to O(N).
 
 **Neighbor lists** (Verlet lists) go one step further by precomputing, for each atom, the list of atoms within a slightly extended cutoff r_c + skin. This list is reused for many time steps before being rebuilt. Within each step, only the neighbors in the list are checked. The skin parameter controls the tradeoff: a larger skin means the list is valid for more steps but contains more atoms per check.
 
