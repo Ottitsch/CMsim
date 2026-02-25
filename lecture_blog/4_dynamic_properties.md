@@ -100,15 +100,16 @@ The practical consequence: if your simulation is only a few autocorrelation time
 
 **Q10. Name a few static and dynamic properties that can be obtained from an MD trajectory.**
 
-Static: energy, temperature, pressure, radial distribution function g(r), structure factor, coordination numbers.<br>
-Dynamic: self-diffusion coefficient, viscosity, thermal conductivity, electrical conductivity.
+Static: potential/kinetic energy, heat capacity, pressure, temperature, radial distribution functions, number of neighbors, order.<br>
+Dynamic: diffusion coefficients, conductivity, viscosity, time-dependent spectroscopy.
 
 **Q11. Why can we compute dynamic (non-equilibrium) properties from equilibrium trajectories?**
 
-The fluctuation-dissipation theorem states that equilibrium fluctuations contain the same information as the system's response to a small perturbation. Green-Kubo relations exploit this: transport coefficients equal integrals of equilibrium time-autocorrelation functions (e.g. diffusion from the velocity autocorrelation function).
+Linear response theory relates the reaction of an equilibrium system to a small external perturbation via equilibrium correlation functions. The Green-Kubo formalism connects a macroscopic response property to its equilibrium fluctuations. For example, diffusion is the response to a concentration gradient, and it equals the integral of the velocity autocorrelation function measured at equilibrium.
 
 **Q12. What are possible sources of error in analyzing an MD trajectory? How can we avoid them?**
 
-(1) Short simulation: the time average has not converged. Fix by running longer.<br>
-(2) Correlated data: consecutive frames are not independent, so naive error estimates are too small. Fix by block averaging or computing the autocorrelation time.<br>
-(3) Non-equilibrated start: early frames reflect the initial configuration, not the target state. Fix by equilibrating first and discarding that period before analysis.
+(1) Systematic reproducible errors: finite-size effects, interaction cutoffs, approximations to E_pot, numerical integration inaccuracies. Fix by using larger boxes, appropriate cutoffs, better force fields, and smaller time steps.<br>
+(2) Inclusion of un-equilibrated data: systematic bias from measuring before the system has reached equilibrium. Fix by discarding the equilibration period before analysis.<br>
+(3) Inadequate sampling: rare events not sampled often enough, leading to poorly reproducible results. Fix by running longer simulations.<br>
+(4) Correlated measurements: consecutive frames are not independent, so naive error estimates underestimate the true error. Fix by block averaging instead of treating all frames as independent samples.
