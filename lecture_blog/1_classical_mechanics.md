@@ -65,11 +65,14 @@ This means once you have a potential energy function, you get forces for free by
 
 ## Key answers
 
-**Q1 — Two fundamental functions:**
+**Q1. What are the two fundamental functions we need to know to run MD?**
+
 (1) Force function: given positions r, compute forces f(r). (2) Integrator: given forces f, compute positions r(t+Δt).
 
-**Q2 — Why Newtonian mechanics:**
-Newtonian mechanics is the classical asymptote of quantum mechanics for large, heavy systems — it is a good approximation for atoms at room temperature and is simple enough to integrate numerically for thousands of atoms.
+**Q2. Why is Newtonian mechanics relevant for MD?**
 
-**Q3 — Conserved observables in a closed system:**
-Total mechanical energy (time-translational symmetry), linear momentum (translational symmetry), and angular momentum (rotational symmetry) — each conservation law follows from a symmetry of the equations of motion via Noether's theorem.
+Newtonian mechanics is the classical asymptote of quantum mechanics for large, heavy systems. It is a good approximation for atoms at room temperature and simple enough to integrate numerically for thousands of atoms.
+
+**Q3. Which observables are conserved in a closed system? Why?**
+
+Total mechanical energy (time-translational symmetry), linear momentum (translational symmetry), and angular momentum (rotational symmetry). Each conservation law follows from a symmetry of the equations of motion via Noether's theorem.

@@ -127,8 +127,12 @@ Disadvantages:
 
 ## Key answers
 
-**Q4 — Two integration algorithms:**
-Euler: simple to implement, but not time-reversible and energy drifts — not used in practice. Velocity-Verlet: time-reversible, symplectic (energy stable), same cost as Euler — the standard choice. Leapfrog: equivalent to Velocity-Verlet, equally accurate, but positions and velocities are offset by half a time step.
+**Q4. Name two numerical integration algorithms and their advantages/disadvantages.**
 
-**Q5 — Periodic boundary conditions:**
+Euler: simple to implement, but not time-reversible and energy drifts. Not used in practice.
+Velocity-Verlet: time-reversible, symplectic (energy stable), same computational cost as Euler. The standard choice.
+Leapfrog: equivalent to Velocity-Verlet in accuracy and stability, but positions and velocities are offset by half a time step, making instantaneous energy evaluation slightly more involved.
+
+**Q5. What are periodic boundary conditions and why are they used in MD quite often?**
+
 The simulation box is replicated infinitely in all directions so there is no surface. Atoms leaving one face re-enter from the opposite face. Used because a realistically-sized box would be almost entirely surface, making bulk properties impossible to measure.

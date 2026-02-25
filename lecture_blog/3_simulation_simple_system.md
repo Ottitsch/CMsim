@@ -89,14 +89,20 @@ The key difference: g(r) tells you the distance distribution to neighbors, avera
 
 ## Key answers
 
-**Q6 — Most time-consuming step and how to speed it up:**
+**Q6. What is the most time-consuming step in a naive all-pair evaluation MD? How can it be made faster?**
+
 Force calculation is O(N²) naively because every atom pair must be evaluated. Cell subdivision reduces this to O(N) by only checking atoms in neighboring grid cells within the cutoff. Neighbor lists further reduce per-step cost by precomputing a list of nearby atoms that is reused for many steps.
 
-**Q7 — Effect of time step size:**
-Slightly too large: energy drifts slowly — the simulation looks plausible but is systematically wrong. Much too large: atoms can overlap within one step, the repulsive force becomes enormous, and the system blows up (velocities diverge, atoms leave the box).
+**Q7. What happens if the integration time-step is a bit too large? What happens if it is much too large?**
 
-**Q8 — Radial distribution function:**
-g(r) is the probability of finding another atom at distance r relative to what an ideal gas at the same density would give. It reveals coordination shells (peaks), nearest-neighbor distances (position of first peak), and long-range order (g(r) → 1 means no correlations).
+Slightly too large: energy drifts slowly. The simulation looks plausible but is systematically wrong.
+Much too large: atoms can overlap within one step, the repulsive force becomes enormous, and the system blows up (velocities diverge, atoms leave the box).
 
-**Q9 — g(r) vs Voronoi tessellation:**
-g(r) gives a spherically averaged distance distribution — global structure, no directional information. Voronoi assigns each atom a cell of all points closer to it than to any other atom, giving local per-atom geometry: coordination number (number of faces), cell shape, and local packing — without assuming spherical symmetry.
+**Q8. What is a radial distribution function and what information can be obtained from it?**
+
+g(r) is the probability of finding another atom at distance r relative to what an ideal gas at the same density would give. It reveals coordination shells (peaks), nearest-neighbor distances (position of first peak), and whether long-range order exists (g(r) goes to 1 at large r for a liquid, stays peaked for a crystal).
+
+**Q9. What is the difference between radial distribution functions and Voronoi tessellation?**
+
+g(r) gives a spherically averaged distance distribution: global structure, no directional information.
+Voronoi assigns each atom a cell of all points closer to it than to any other atom, giving local per-atom geometry: coordination number (number of faces), cell shape, and local packing, without assuming spherical symmetry.

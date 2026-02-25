@@ -67,7 +67,7 @@ D = (1/3) ∫₀^∞ <v(0) · v(t)> dt
 
 Compute the VACF: for each atom, multiply its velocity at time 0 by its velocity at time t, average over all atoms and all time origins, and integrate.
 
-The VACF starts at <v²> (positive) and decays to zero. For a liquid, it typically shows a small negative dip (the "cage effect" — atoms bounce back from their neighbors) before going to zero.
+The VACF starts at <v²> (positive) and decays to zero. For a liquid, it typically shows a small negative dip (the "cage effect" (atoms bounce back from their neighbors)) before going to zero.
 
 ## Error sources in MD trajectory analysis
 
@@ -98,11 +98,17 @@ The practical consequence: if your simulation is only a few autocorrelation time
 
 ## Key answers
 
-**Q10 — Static and dynamic properties:**
-Static: energy, temperature, pressure, radial distribution function g(r), structure factor, coordination numbers. Dynamic: self-diffusion coefficient, viscosity, thermal conductivity, electrical conductivity.
+**Q10. Name a few static and dynamic properties that can be obtained from an MD trajectory.**
 
-**Q11 — Dynamic properties from equilibrium trajectories:**
-The fluctuation-dissipation theorem says equilibrium fluctuations contain the same information as the system's response to a small perturbation. Green-Kubo relations exploit this: transport coefficients equal integrals of equilibrium time-autocorrelation functions (e.g. diffusion from the velocity autocorrelation function).
+Static: energy, temperature, pressure, radial distribution function g(r), structure factor, coordination numbers.
+Dynamic: self-diffusion coefficient, viscosity, thermal conductivity, electrical conductivity.
 
-**Q12 — Error sources and how to avoid them:**
-(1) Short simulation → time average has not converged; fix by running longer. (2) Correlated data → consecutive frames are not independent, so naive error estimates are too small; fix by block averaging or computing the autocorrelation time. (3) Non-equilibrated start → early frames reflect the initial configuration, not the target state; fix by equilibrating first and discarding the equilibration period before analysis.
+**Q11. Why can we compute dynamic (non-equilibrium) properties from equilibrium trajectories?**
+
+The fluctuation-dissipation theorem states that equilibrium fluctuations contain the same information as the system's response to a small perturbation. Green-Kubo relations exploit this: transport coefficients equal integrals of equilibrium time-autocorrelation functions (e.g. diffusion from the velocity autocorrelation function).
+
+**Q12. What are possible sources of error in analyzing an MD trajectory? How can we avoid them?**
+
+(1) Short simulation: the time average has not converged. Fix by running longer.
+(2) Correlated data: consecutive frames are not independent, so naive error estimates are too small. Fix by block averaging or computing the autocorrelation time.
+(3) Non-equilibrated start: early frames reflect the initial configuration, not the target state. Fix by equilibrating first and discarding that period before analysis.
