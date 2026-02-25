@@ -71,26 +71,29 @@ The VACF starts at <v²> (positive) and decays to zero. For a liquid, it typical
 
 ## Error sources in MD trajectory analysis
 
-Three main sources of error appear in MD analysis:
+Four main sources of error appear in MD analysis:
 
-**1. Insufficient sampling (short simulation)**
-If the simulation is too short, the time average does not converge to the ensemble average. Rare events and slow processes are not captured. The measured property fluctuates and has high statistical uncertainty. Solution: run longer simulations.
+**1. Systematic reproducible errors**
+Finite-size effects, interaction cutoffs, approximations to E_pot, and numerical integration inaccuracies all introduce systematic, reproducible errors. These shift results in a consistent direction regardless of simulation length. Solution: use larger boxes, appropriate cutoffs, better force fields, and smaller time steps.
 
-**2. Correlated data**
-Consecutive MD frames are not independent. Atom positions change only slightly between adjacent time steps. If you estimate the error using the standard error of the mean over all frames, you will severely underestimate the true error because you are not counting independent samples. Solution: use block averaging (divide the trajectory into blocks, compute the property per block, estimate error from the spread across blocks) or compute the autocorrelation time and use it to determine the number of statistically independent samples.
-
-**3. Non-equilibrated initial state**
+**2. Non-equilibrated initial state**
 If you start measurement too early, the system is still relaxing from its initial configuration. Properties from that period reflect the initial state, not the equilibrium state of interest. Solution: always equilibrate first, monitor total energy or temperature convergence, and only start production measurement after equilibration is confirmed.
+
+**3. Insufficient sampling (short simulation)**
+If the simulation is too short, the time average does not converge to the ensemble average. Rare events and slow processes are not captured. The measured property fluctuates and has high statistical uncertainty, and results are often not well reproducible. Solution: run longer simulations.
+
+**4. Correlated data**
+Consecutive MD frames are not independent. Atom positions change only slightly between adjacent time steps. If you estimate the error using the standard error of the mean over all frames, you will severely underestimate the true error because you are not counting independent samples. Solution: use block averaging (divide the trajectory into blocks, compute the property per block, estimate error from the spread across blocks) or compute the autocorrelation time and use it to determine the number of statistically independent samples.
 
 ## The autocorrelation function
 
-Many dynamic observables involve the autocorrelation function C(t) of some quantity A:
+Many dynamic observables involve the autocorrelation function of some quantity A. The normalized, mean-subtracted form used in the slides is:
 
 ```
-C(t) = <A(0) · A(t)>
+R(τ) = <(A(t) − <A>)(A(t+τ) − <A>)> / <(δA)²>
 ```
 
-C(0) = <A²> (the variance). C(t) decays to zero at large t for an ergodic system.
+where `<(δA)²> = <A²> − <A>²` is the variance. R(0) = 1 by definition. R(τ) decays to zero at large τ for an ergodic system.
 
 The autocorrelation time τ_A gives a rough measure of memory: for t >> τ_A the value at time t is uncorrelated with the value at time 0. This is the timescale on which you need to separate samples to treat them as independent.
 
