@@ -36,7 +36,15 @@ r(t + Δt) = r(t) + Δt·v(t) + ½Δt²·a(t)
 v(t + Δt) = v(t) + Δt·a(t)
 ```
 
-This is straightforward to implement. The drawbacks are that it is not time-reversible and not very accurate. Running the simulation backwards does not recover the original trajectory. Energy drifts systematically over time. For production MD, Euler is not used.
+**Pros:**
+- Simple to implement and understand
+
+**Cons:**
+- Not time-reversible: running the simulation backwards does not recover the original trajectory
+- Not very accurate: energy drifts systematically over time because the truncation error accumulates in one direction
+- Not symplectic: does not preserve the geometric structure of phase space
+
+For production MD, Euler is not used.
 
 ## The Velocity-Verlet algorithm
 
@@ -49,17 +57,22 @@ a(t + Δt) = f(r(t + Δt)) / m        ← recompute forces at new positions
 v(t + Δt) = v(t) + ½Δt·[a(t) + a(t + Δt)]
 ```
 
-Advantages:
+**Pros:**
 - Time-reversible: running the simulation backwards recovers the original trajectory
-- Symplectic: conserves a modified energy, so total energy fluctuates but does not drift
-- Good energy conservation even for larger time steps
-- Only one force evaluation per step (same cost as Euler)
+- Symplectic: conserves a modified energy, so total energy fluctuates around a constant but does not drift
+- Good energy conservation even for moderately large time steps
+- Only one force evaluation per step (same computational cost as Euler)
+- Positions and velocities are available at the same time step, making energy computation straightforward
+
+**Cons:**
+- Slightly more complex to implement than Euler or Leapfrog
+- Requires storing both the old and new accelerations simultaneously during the velocity update
 
 The symplectic property is the key reason Velocity-Verlet is preferred. A symplectic integrator preserves the geometric structure of phase space and keeps long simulations stable.
 
 ## The Leapfrog algorithm
 
-Leapfrog is equivalent to Velocity-Verlet but stores velocities at half-integer time steps:
+Leapfrog is mathematically equivalent to Velocity-Verlet but stores velocities at half-integer time steps:
 
 ```
 Leapfrog algorithm:
@@ -67,10 +80,15 @@ v(t + ½Δt) = v(t - ½Δt) + Δt·a(t)
 r(t + Δt)  = r(t) + Δt·v(t + ½Δt)
 ```
 
-Advantages and disadvantages compared to Velocity-Verlet:
-- Equally accurate and time-reversible
-- Slightly simpler to implement
-- Disadvantage: positions and velocities are offset by half a step, so computing instantaneous kinetic energy requires averaging velocities, adding a small complication
+**Pros:**
+- Time-reversible and symplectic: same accuracy and stability as Velocity-Verlet
+- Slightly simpler to implement than Velocity-Verlet
+- Memory efficient: only one set of velocities needs to be stored at a time
+
+**Cons:**
+- Positions and velocities are offset by half a time step and are never known at the same instant
+- Computing instantaneous kinetic energy requires averaging v(t - ½Δt) and v(t + ½Δt), adding a small complication
+- Less intuitive conceptually than Velocity-Verlet
 
 In practice, Leapfrog and Velocity-Verlet produce identical trajectories. Most MD codes use one or the other based on convention.
 
