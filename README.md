@@ -98,10 +98,10 @@ Chapter 8:
 
 \- 30. How is permutational invariance included in ML potentials?
 
+-----
 
-
-PROMPT:
-your task is the following:
+PROMPT:  
+your task is the following:  
 create 1 lecture blog for each slide in slides.pdf
 make sure the lecture blog focusses on answering the exam question of the chapter
 check 4\_profiling\_tools.md as an example
