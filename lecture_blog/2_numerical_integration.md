@@ -129,8 +129,8 @@ Disadvantages:
 
 **Q4. Name two numerical integration algorithms and their advantages/disadvantages.**
 
-Euler: simple to implement, but not time-reversible and energy drifts. Not used in practice.
-Velocity-Verlet: time-reversible, symplectic (energy stable), same computational cost as Euler. The standard choice.
+Euler: simple to implement, but not time-reversible and energy drifts. Not used in practice.<br>
+Velocity-Verlet: time-reversible, symplectic (energy stable), same computational cost as Euler. The standard choice.<br>
 Leapfrog: equivalent to Velocity-Verlet in accuracy and stability, but positions and velocities are offset by half a time step, making instantaneous energy evaluation slightly more involved.
 
 **Q5. What are periodic boundary conditions and why are they used in MD quite often?**

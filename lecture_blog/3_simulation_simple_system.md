@@ -95,7 +95,7 @@ Force calculation is O(N²) naively because every atom pair must be evaluated. C
 
 **Q7. What happens if the integration time-step is a bit too large? What happens if it is much too large?**
 
-Slightly too large: energy drifts slowly. The simulation looks plausible but is systematically wrong.
+Slightly too large: energy drifts slowly. The simulation looks plausible but is systematically wrong.<br>
 Much too large: atoms can overlap within one step, the repulsive force becomes enormous, and the system blows up (velocities diverge, atoms leave the box).
 
 **Q8. What is a radial distribution function and what information can be obtained from it?**
@@ -104,5 +104,5 @@ g(r) is the probability of finding another atom at distance r relative to what a
 
 **Q9. What is the difference between radial distribution functions and Voronoi tessellation?**
 
-g(r) gives a spherically averaged distance distribution: global structure, no directional information.
+g(r) gives a spherically averaged distance distribution: global structure, no directional information.<br>
 Voronoi assigns each atom a cell of all points closer to it than to any other atom, giving local per-atom geometry: coordination number (number of faces), cell shape, and local packing, without assuming spherical symmetry.

@@ -67,7 +67,8 @@ This means once you have a potential energy function, you get forces for free by
 
 **Q1. What are the two fundamental functions we need to know to run MD?**
 
-(1) Force function: given positions r, compute forces f(r). (2) Integrator: given forces f, compute positions r(t+Δt).
+(1) Force function: given positions r, compute forces f(r).<br>
+(2) Integrator: given forces f, compute positions r(t+Δt).
 
 **Q2. Why is Newtonian mechanics relevant for MD?**
 
