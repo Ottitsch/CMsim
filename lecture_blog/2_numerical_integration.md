@@ -125,6 +125,10 @@ Disadvantages:
 - The box size must be larger than twice the interaction cutoff
 - Periodic systems cannot model truly isolated molecules or interfaces without care
 
-## One sentence to remember
+## Key answers
 
-Velocity-Verlet and Leapfrog are the standard integration algorithms for MD because they are time-reversible and symplectic, giving stable energy conservation, while periodic boundary conditions eliminate surface effects and allow a small simulation box to model bulk material.
+**Q4 — Two integration algorithms:**
+Euler: simple to implement, but not time-reversible and energy drifts — not used in practice. Velocity-Verlet: time-reversible, symplectic (energy stable), same cost as Euler — the standard choice. Leapfrog: equivalent to Velocity-Verlet, equally accurate, but positions and velocities are offset by half a time step.
+
+**Q5 — Periodic boundary conditions:**
+The simulation box is replicated infinitely in all directions so there is no surface. Atoms leaving one face re-enter from the opposite face. Used because a realistically-sized box would be almost entirely surface, making bulk properties impossible to measure.

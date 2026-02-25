@@ -87,6 +87,16 @@ What Voronoi gives that g(r) does not:
 
 The key difference: g(r) tells you the distance distribution to neighbors, averaged over all orientations. Voronoi tells you the local geometry around each individual atom, without averaging.
 
-## One sentence to remember
+## Key answers
 
-Force calculation dominates MD cost and scales as O(N²) naively but O(N) with cell subdivision or neighbor lists; the time step must be small enough that energy is conserved rather than drifting or diverging; and structural analysis tools like g(r) and Voronoi tessellation reveal different aspects of local order in the simulated liquid or solid.
+**Q6 — Most time-consuming step and how to speed it up:**
+Force calculation is O(N²) naively because every atom pair must be evaluated. Cell subdivision reduces this to O(N) by only checking atoms in neighboring grid cells within the cutoff. Neighbor lists further reduce per-step cost by precomputing a list of nearby atoms that is reused for many steps.
+
+**Q7 — Effect of time step size:**
+Slightly too large: energy drifts slowly — the simulation looks plausible but is systematically wrong. Much too large: atoms can overlap within one step, the repulsive force becomes enormous, and the system blows up (velocities diverge, atoms leave the box).
+
+**Q8 — Radial distribution function:**
+g(r) is the probability of finding another atom at distance r relative to what an ideal gas at the same density would give. It reveals coordination shells (peaks), nearest-neighbor distances (position of first peak), and long-range order (g(r) → 1 means no correlations).
+
+**Q9 — g(r) vs Voronoi tessellation:**
+g(r) gives a spherically averaged distance distribution — global structure, no directional information. Voronoi assigns each atom a cell of all points closer to it than to any other atom, giving local per-atom geometry: coordination number (number of faces), cell shape, and local packing — without assuming spherical symmetry.

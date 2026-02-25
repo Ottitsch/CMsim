@@ -63,6 +63,13 @@ f_i = -∂E_pot / ∂x_i
 
 This means once you have a potential energy function, you get forces for free by differentiation. The choice of potential energy function is what distinguishes different types of MD simulations.
 
-## One sentence to remember
+## Key answers
 
-An MD simulation needs exactly two things: a force function f(r) to compute how atoms interact, and an integrator to advance positions forward in time, and Newtonian mechanics provides the framework because it is the classical limit of quantum mechanics and is directly amenable to numerical integration.
+**Q1 — Two fundamental functions:**
+(1) Force function: given positions r, compute forces f(r). (2) Integrator: given forces f, compute positions r(t+Δt).
+
+**Q2 — Why Newtonian mechanics:**
+Newtonian mechanics is the classical asymptote of quantum mechanics for large, heavy systems — it is a good approximation for atoms at room temperature and is simple enough to integrate numerically for thousands of atoms.
+
+**Q3 — Conserved observables in a closed system:**
+Total mechanical energy (time-translational symmetry), linear momentum (translational symmetry), and angular momentum (rotational symmetry) — each conservation law follows from a symmetry of the equations of motion via Noether's theorem.

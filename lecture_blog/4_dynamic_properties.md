@@ -96,6 +96,13 @@ The autocorrelation time τ_A gives a rough measure of memory: for t >> τ_A the
 
 The practical consequence: if your simulation is only a few autocorrelation times long, your error estimate will be dominated by statistical noise and will not be reliable.
 
-## One sentence to remember
+## Key answers
 
-Static properties are time averages of instantaneous quantities, dynamic properties are integrals of equilibrium autocorrelation functions via Green-Kubo relations, and the main error sources are insufficient sampling, correlated data, and a non-equilibrated starting configuration.
+**Q10 — Static and dynamic properties:**
+Static: energy, temperature, pressure, radial distribution function g(r), structure factor, coordination numbers. Dynamic: self-diffusion coefficient, viscosity, thermal conductivity, electrical conductivity.
+
+**Q11 — Dynamic properties from equilibrium trajectories:**
+The fluctuation-dissipation theorem says equilibrium fluctuations contain the same information as the system's response to a small perturbation. Green-Kubo relations exploit this: transport coefficients equal integrals of equilibrium time-autocorrelation functions (e.g. diffusion from the velocity autocorrelation function).
+
+**Q12 — Error sources and how to avoid them:**
+(1) Short simulation → time average has not converged; fix by running longer. (2) Correlated data → consecutive frames are not independent, so naive error estimates are too small; fix by block averaging or computing the autocorrelation time. (3) Non-equilibrated start → early frames reflect the initial configuration, not the target state; fix by equilibrating first and discarding the equilibration period before analysis.
